@@ -1,0 +1,261 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Mentor {
+  mentor_id   String        @id @default(uuid())
+  first_name  String
+  last_name   String
+  email       Unsupported("email_address")
+  phone       Unsupported("phone_number")
+  cnic        Unsupported("cnic_number")
+  rating      Unsupported("rating_value")
+  //references
+  mentorRef MentorSkill[]   @relation()
+  mentorRefCourses Courses[]  @relation()
+}
+
+model Skill {
+  id          String       @id @default(uuid())
+  skill       String    @unique
+  skillref MentorSkill[] @relation()
+}
+
+model MentorSkill {
+  mentor      Mentor     @relation(fields: [mentor_id], references: [mentor_id])
+  mentor_id   String
+  skill       Skill   @relation(fields: [skill_id], references: [id])
+  skill_id    String
+  @@id([mentor_id, skill_id])
+}
+
+model Courses{
+  course_id String @id @default(uuid())
+
+  mentor Mentor @relation(fields: [mentor_id], references: [mentor_id])
+  mentor_id String
+
+  difficulty_level Unsupported("difficulty_level") 
+  rating Unsupported("rating_value")
+
+  curriculum Curriculum @relation(fields: [curriculum_id], references: [curr_id])
+  curriculum_id Int @unique
+
+  //ref
+  courseRef CourseTag[] @relation()
+  testimonial CourseTestimonials[] @relation()
+  announcement CourseAnnouncements[] @relation()
+  lo CourseLO[] @relation()
+  preReq CoursePreReq[] @relation()
+  schedule CourseSchedule? @relation()
+  apprenticeCourses ApprenticeCourses[] @relation()
+  apprenticeCert ApprenticeCert[] @relation()
+  enrollments Enrollments[] @relation() // one to many realtionship between Coruses and Enrollments ; cuz one course could be enrolled in by multiple apprentices
+}
+
+model CourseTag{
+  id String @id @default(uuid())
+  course_id String
+  course Courses @relation(fields: [course_id], references: [course_id])
+  category String
+}
+
+model CourseTestimonials{
+  id String @id @default(uuid())
+  course_id String
+  course Courses @relation(fields: [course_id], references: [course_id])
+  testimonial String
+
+  apprentice Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
+  apprentice_id String
+}
+
+
+model CourseAnnouncements{
+  announcement_id Int
+  course_id String
+  course Courses @relation(fields: [course_id], references: [course_id])
+  announcment_desc String
+  date DateTime
+
+  @@id([course_id, announcement_id])
+}
+
+// --> course learning outcomes
+model CourseLO{
+  id String @id @default(uuid())
+  course_id String
+  course Courses @relation(fields: [course_id], references: [course_id])
+  lo String
+
+}
+
+model CoursePreReq{
+  id String @id @default(uuid())
+  course_id String
+  course Courses @relation(fields: [course_id], references: [course_id])
+  preReq String
+}
+
+
+model CourseSchedule{
+  id String @id @default(uuid())
+  course_id String @unique // each course can only have one schedule
+  course Courses @relation(fields: [course_id], references: [course_id])
+
+  weekday Unsupported("weekday")
+  starttime DateTime 
+  endtime  DateTime
+}
+
+//curriculum 
+model Curriculum{
+  curr_id Int @id @default(autoincrement())
+  sections Section[] @relation()
+
+  //ref
+  currRef Courses? @relation()
+}
+
+model Section {
+  curr_id    Int
+  section_id Int
+  curriculum Curriculum @relation(fields: [curr_id], references: [curr_id]) 
+
+  @@id([curr_id, section_id])
+
+  //ref
+  sectionRef SectionLO[] @relation()
+  lessons Lesson[] @relation()
+  tests Test[] @relation()
+}
+
+model SectionLO{
+  id String @id @default(uuid())
+  lo String 
+
+  section_id Int      // Reference to Section's composite primary key
+  curr_id Int
+  section    Section  @relation(fields: [section_id, curr_id], references: [section_id, curr_id]) 
+
+  
+}
+
+model Lesson{
+  curr_id Int
+  section_id Int
+  lesson_id Int 
+
+  section  Section  @relation(fields: [section_id, curr_id], references: [section_id, curr_id]) 
+
+  @@id([curr_id,section_id,lesson_id])
+
+  uri String
+  title String
+  desc String?
+
+  //ref
+  lessRes LessonResources[] @relation()
+  apprenticeCourses ApprenticeCourses[] @relation()
+}
+
+
+model LessonResources{
+  id String @id @default(uuid())
+  section_id Int      // Reference to Section's composite primary key
+  curr_id Int
+  lesson_id Int
+  lessonRes  Lesson  @relation(fields: [section_id, curr_id, lesson_id], references: [section_id, curr_id, lesson_id]) 
+
+  uri String
+  
+}
+
+model Test{
+  curr_id Int
+  section_id Int
+  lesson_id Int 
+
+  section  Section  @relation(fields: [section_id, curr_id], references: [section_id, curr_id]) 
+
+  @@id([curr_id,section_id,lesson_id])
+
+  uri String
+  title String
+  desc String?
+
+}
+
+
+//enrollment
+model Enrollments{
+  course_id String
+  apprentice_id String
+
+  apprentice Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
+  course Courses @relation(fields: [course_id], references: [course_id])
+
+  @@id([course_id, apprentice_id])
+}
+
+
+//Apprentice
+model Apprentice{
+  apprentice_id String @id @default(uuid())
+  pic String // pic uri 
+  first_name  String
+  last_name   String
+  phone Unsupported("phone_number")
+  age Int 
+  institution String
+  cnic Unsupported("cnic_number")?
+  guardian_name String?
+  guardian_cnic Unsupported("cnic_number")?
+  guardian_phone Unsupported("phone_number")?
+
+  //ref 
+  apprenticeRef CourseTestimonials[] @relation()
+  enrollement Enrollments[] @relation()
+  apprenticeCourses ApprenticeCourses[] @relation()
+  apprenticeCert ApprenticeCert[] @relation()
+}
+
+model ApprenticeCourses{
+  course_id String
+  apprentice_id String
+
+  apprentice Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
+  course Courses @relation(fields: [course_id], references: [course_id])
+
+  completed Boolean?
+  current_chapter_id Int
+  current_section_id Int
+  current_curr_id Int
+  current_lesson Lesson @relation(fields: [current_chapter_id, current_curr_id, current_section_id], references: [section_id, curr_id, lesson_id])
+  // init current curr, sectio, lesson will be NULL
+
+  startTime DateTime @default(now())
+  endTime DateTime?
+
+  @@id([course_id,apprentice_id])
+}
+
+model ApprenticeCert{
+  course_id String
+  apprentice_id String
+
+  apprentice Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
+  course Courses @relation(fields: [course_id], references: [course_id])
+
+  uri String?
+
+  @@id([course_id,apprentice_id])
+}
