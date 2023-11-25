@@ -55,7 +55,7 @@ model CourseAnnouncements {
   announcement_id  Int
   course_id        Int
   announcment_desc String
-  date             DateTime
+  date             DateTime @default(now())
   Courses          Courses  @relation(fields: [course_id], references: [course_id])
 
   @@id([course_id, announcement_id])
