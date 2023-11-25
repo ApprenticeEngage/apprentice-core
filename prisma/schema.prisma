@@ -85,9 +85,10 @@ model CourseSchedule {
   weekday   weekday
   starttime DateTime
   endtime   DateTime
+
   Courses   Courses  @relation(fields: [course_id], references: [course_id])
 
-  @@unique([course_id])
+  @@id([course_id])
 }
 
 model CourseTag {
