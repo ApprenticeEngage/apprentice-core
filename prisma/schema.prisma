@@ -7,124 +7,131 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Mentor {
-  mentor_id        String        @id @default(uuid())
-  first_name       String
-  last_name        String
-  email            String        @db.VarChar(320)
-  phone            String        @db.VarChar(12)
-  cnic             String        @db.VarChar(13)
-  rating           Float
-  mentorRefCourses Courses[]
-  mentorRef        MentorSkill[]
+model Apprentice {
+  apprentice_id      Int               @id @default(autoincrement())
+  pic                String
+  first_name         String
+  last_name          String
+  phone              String               @db.VarChar(12)
+  age                Int
+  institution        String
+  cnic               String?              @db.VarChar(13)
+  guardian_name      String?
+  guardian_cnic      String?              @db.VarChar(13)
+  guardian_phone     String?              @db.VarChar(12)
+  ApprenticeCert     ApprenticeCert[]
+  ApprenticeCourses  ApprenticeCourses[]
+  CourseTestimonials CourseTestimonials[]
+  Enrollments        Enrollments[]
 }
 
-model Skill {
-  id       String        @id @default(uuid())
-  skill    String        @unique
-  skillref MentorSkill[]
+model ApprenticeCert {
+  course_id     Int
+  apprentice_id Int
+  uri           String?
+  Apprentice    Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
+  Courses       Courses    @relation(fields: [course_id], references: [course_id])
+
+  @@id([course_id, apprentice_id])
 }
 
-model MentorSkill {
-  mentor_id String
-  skill_id  String
-  mentor    Mentor @relation(fields: [mentor_id], references: [mentor_id])
-  skill     Skill  @relation(fields: [skill_id], references: [id])
+model ApprenticeCourses {
+  course_id          Int
+  apprentice_id      Int
+  completed          Boolean?
+  current_chapter_id Int
+  current_section_id Int
+  current_curr_id    Int
+  startTime          DateTime   @default(now())
+  endTime            DateTime?
+  Apprentice         Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
+  Courses            Courses    @relation(fields: [course_id], references: [course_id])
+  Lesson             Lesson     @relation(fields: [current_chapter_id, current_curr_id, current_section_id], references: [section_id, curr_id, lesson_id])
 
-  @@id([mentor_id, skill_id])
-}
-
-model Courses {
-  course_id         String                @id @default(uuid())
-  mentor_id         String
-  difficulty_level  Int
-  rating            Float
-  curriculum_id     Int                   @unique
-  apprenticeCert    ApprenticeCert[]
-  apprenticeCourses ApprenticeCourses[]
-  announcement      CourseAnnouncements[]
-  lo                CourseLO[]
-  preReq            CoursePreReq[]
-  schedule          CourseSchedule?
-  courseRef         CourseTag[]
-  testimonial       CourseTestimonials[]
-  curriculum        Curriculum            @relation(fields: [curriculum_id], references: [curr_id])
-  mentor            Mentor                @relation(fields: [mentor_id], references: [mentor_id])
-  enrollments       Enrollments[]
-}
-
-model CourseTag {
-  id        String  @id @default(uuid())
-  course_id String
-  category  String
-  course    Courses @relation(fields: [course_id], references: [course_id])
-}
-
-model CourseTestimonials {
-  id            String     @id @default(uuid())
-  course_id     String
-  testimonial   String
-  apprentice_id String
-  apprentice    Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
-  course        Courses    @relation(fields: [course_id], references: [course_id])
+  @@id([course_id, apprentice_id])
 }
 
 model CourseAnnouncements {
   announcement_id  Int
-  course_id        String
+  course_id        Int
   announcment_desc String
   date             DateTime
-  course           Courses  @relation(fields: [course_id], references: [course_id])
+  Courses          Courses  @relation(fields: [course_id], references: [course_id])
 
   @@id([course_id, announcement_id])
 }
 
 model CourseLO {
-  id        String  @id @default(uuid())
-  course_id String
+  id        String  @id
+  course_id Int
   lo        String
-  course    Courses @relation(fields: [course_id], references: [course_id])
+  Courses   Courses @relation(fields: [course_id], references: [course_id])
 }
 
 model CoursePreReq {
-  id        String  @id @default(uuid())
-  course_id String
+  id        String  @id
+  course_id Int
   preReq    String
-  course    Courses @relation(fields: [course_id], references: [course_id])
+  Courses   Courses @relation(fields: [course_id], references: [course_id])
 }
 
 model CourseSchedule {
-  id        String   @id @default(uuid())
-  course_id String   @unique
+  id        String   @id
+  course_id Int   @unique
   weekday   weekday
   starttime DateTime
   endtime   DateTime
-  course    Courses  @relation(fields: [course_id], references: [course_id])
+  Courses   Courses  @relation(fields: [course_id], references: [course_id])
+}
+
+model CourseTag {
+  id        String  @id
+  course_id Int
+  category  String
+  Courses   Courses @relation(fields: [course_id], references: [course_id])
+}
+
+model CourseTestimonials {
+  id            String     @id
+  course_id     Int
+  testimonial   String
+  apprentice_id Int
+  Apprentice    Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
+  Courses       Courses    @relation(fields: [course_id], references: [course_id])
+}
+
+model Courses {
+  course_id           Int                @id @default(autoincrement())
+  mentor_id           Int?
+  curriculum_id       Int?                   @unique
+  difficulty_level    Int              
+  rating              Int              
+  ApprenticeCert      ApprenticeCert[]
+  ApprenticeCourses   ApprenticeCourses[]
+  CourseAnnouncements CourseAnnouncements[]
+  CourseLO            CourseLO[]
+  CoursePreReq        CoursePreReq[]
+  CourseSchedule      CourseSchedule?
+  CourseTag           CourseTag[]
+  CourseTestimonials  CourseTestimonials[]
+  Curriculum          Curriculum?            @relation(fields: [curriculum_id], references: [curr_id])
+  Mentor              Mentor?                @relation(fields: [mentor_id], references: [mentor_id])
+  Enrollments         Enrollments[]
 }
 
 model Curriculum {
-  curr_id  Int       @id @default(autoincrement())
-  currRef  Courses?
-  sections Section[]
+  curr_id Int       @id @default(autoincrement())
+  Courses Courses?
+  Section Section[]
 }
 
-model Section {
-  curr_id    Int
-  section_id Int
-  lessons    Lesson[]
-  curriculum Curriculum  @relation(fields: [curr_id], references: [curr_id])
-  sectionRef SectionLO[]
-  tests      Test[]
+model Enrollments {
+  course_id     Int
+  apprentice_id Int
+  Apprentice    Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
+  Courses       Courses    @relation(fields: [course_id], references: [course_id])
 
-  @@id([curr_id, section_id])
-}
-
-model SectionLO {
-  id         String  @id @default(uuid())
-  lo         String
-  section_id Int
-  curr_id    Int
-  section    Section @relation(fields: [section_id, curr_id], references: [section_id, curr_id])
+  @@id([course_id, apprentice_id])
 }
 
 model Lesson {
@@ -134,20 +141,66 @@ model Lesson {
   uri               String
   title             String
   desc              String?
-  apprenticeCourses ApprenticeCourses[]
-  section           Section             @relation(fields: [section_id, curr_id], references: [section_id, curr_id])
-  lessRes           LessonResources[]
+  ApprenticeCourses ApprenticeCourses[]
+  Section           Section             @relation(fields: [section_id, curr_id], references: [section_id, curr_id])
+  LessonResources   LessonResources[]
 
   @@id([curr_id, section_id, lesson_id])
 }
 
 model LessonResources {
-  id         String @id @default(uuid())
+  id         String @id
   section_id Int
   curr_id    Int
   lesson_id  Int
   uri        String
-  lessonRes  Lesson @relation(fields: [section_id, curr_id, lesson_id], references: [section_id, curr_id, lesson_id])
+  Lesson     Lesson @relation(fields: [section_id, curr_id, lesson_id], references: [section_id, curr_id, lesson_id])
+}
+
+model Mentor {
+  mentor_id    Int        @id @default(autoincrement())
+  first_name   String
+  last_name    String
+  email        String        @db.VarChar(320)
+  phone        String        @db.VarChar(12)
+  cnic         String        @db.VarChar(13)
+  rating       Int
+  Courses      Courses[]
+  MentorSkill  MentorSkill[]
+}
+
+model MentorSkill {
+  mentor_id Int
+  skill_id  Int
+  Mentor    Mentor @relation(fields: [mentor_id], references: [mentor_id])
+  Skill     Skill  @relation(fields: [skill_id], references: [id])
+
+  @@id([mentor_id, skill_id])
+}
+
+model Section {
+  curr_id    Int
+  section_id Int
+  Lesson     Lesson[]
+  Curriculum Curriculum  @relation(fields: [curr_id], references: [curr_id])
+  SectionLO  SectionLO[]
+  Test       Test[]
+
+  @@id([curr_id, section_id])
+}
+
+model SectionLO {
+  id         String  @id
+  lo         String
+  section_id Int
+  curr_id    Int
+  Section    Section @relation(fields: [section_id, curr_id], references: [section_id, curr_id])
+}
+
+model Skill {
+  id          Int        @id @default(autoincrement())
+  skill       String        @unique
+  MentorSkill MentorSkill[]
 }
 
 model Test {
@@ -157,62 +210,9 @@ model Test {
   uri        String
   title      String
   desc       String?
-  section    Section @relation(fields: [section_id, curr_id], references: [section_id, curr_id])
+  Section    Section @relation(fields: [section_id, curr_id], references: [section_id, curr_id])
 
   @@id([curr_id, section_id, lesson_id])
-}
-
-model Enrollments {
-  course_id     String
-  apprentice_id String
-  apprentice    Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
-  course        Courses    @relation(fields: [course_id], references: [course_id])
-
-  @@id([course_id, apprentice_id])
-}
-
-model Apprentice {
-  apprentice_id     String               @id @default(uuid())
-  pic               String
-  first_name        String
-  last_name         String
-  phone             String               @db.VarChar(12)
-  age               Int
-  institution       String
-  cnic              String?              @db.VarChar(13)
-  guardian_name     String?
-  guardian_cnic     String?              @db.VarChar(13)
-  guardian_phone    String?              @db.VarChar(12)
-  apprenticeCert    ApprenticeCert[]
-  apprenticeCourses ApprenticeCourses[]
-  apprenticeRef     CourseTestimonials[]
-  enrollement       Enrollments[]
-}
-
-model ApprenticeCourses {
-  course_id          String
-  apprentice_id      String
-  completed          Boolean?
-  current_chapter_id Int
-  current_section_id Int
-  current_curr_id    Int
-  startTime          DateTime   @default(now())
-  endTime            DateTime?
-  apprentice         Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
-  course             Courses    @relation(fields: [course_id], references: [course_id])
-  current_lesson     Lesson     @relation(fields: [current_chapter_id, current_curr_id, current_section_id], references: [section_id, curr_id, lesson_id])
-
-  @@id([course_id, apprentice_id])
-}
-
-model ApprenticeCert {
-  course_id     String
-  apprentice_id String
-  uri           String?
-  apprentice    Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
-  course        Courses    @relation(fields: [course_id], references: [course_id])
-
-  @@id([course_id, apprentice_id])
 }
 
 enum weekday {
