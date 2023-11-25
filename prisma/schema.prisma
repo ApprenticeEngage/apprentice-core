@@ -52,10 +52,10 @@ model ApprenticeCourses {
 }
 
 model CourseAnnouncements {
-  announcement_id  Int
+  announcement_id  Int   @default(0)
   course_id        Int
-  announcment_desc String
-  date             DateTime @default(now())
+  announcement_desc String
+  date             DateTime? @default(now())
   Courses          Courses  @relation(fields: [course_id], references: [course_id])
 
   @@id([course_id, announcement_id])
@@ -115,7 +115,8 @@ model Courses {
   mentor_id           Int?
   curriculum_id       Int?                   @unique
   difficulty_level    Int              
-  rating              Int              
+  rating              Int  
+  announcementsNo     Int?               @default(0)
   ApprenticeCert      ApprenticeCert[]
   ApprenticeCourses   ApprenticeCourses[]
   CourseAnnouncements CourseAnnouncements[]

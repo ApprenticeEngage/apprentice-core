@@ -42,4 +42,36 @@ export class CourseService {
       },
     });
   }
+
+  async updateAnnouncementCounter(course_id: number) {
+    const course = await this.dataBase.courses.update({
+      where: {
+        course_id: course_id,
+      },
+      data: {
+        announcementsNo: { increment: 1 },
+      },
+    });
+    console.log(`ann id has been increased to ${course.announcementsNo}`);
+  }
+  async getAnnouncementCounter(course_id: number) {
+    const course = await this.dataBase.courses.findFirst({
+      where: {
+        course_id: course_id,
+      },
+    });
+    if (course.announcementsNo == null) {
+      const updatedCourse = await this.dataBase.courses.update({
+        where: {
+          course_id: course_id,
+        },
+        data: {
+          announcementsNo: 0,
+        },
+      });
+      console.log(`updateCourse ${updatedCourse.announcementsNo}`);
+      return updatedCourse.announcementsNo;
+    }
+    return course.announcementsNo;
+  }
 }
