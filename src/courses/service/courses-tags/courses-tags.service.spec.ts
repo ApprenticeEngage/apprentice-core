@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CourseService } from './service.service';
+import { CoursesTagsService } from './courses-tags.service';
 
-describe('ServiceService', () => {
-  let service: CourseService;
+describe('CoursesTagsService', () => {
+  let service: CoursesTagsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CourseService],
+      providers: [CoursesTagsService],
     }).compile();
 
-    service = module.get<CourseService>(CourseService);
+    service = module.get<CoursesTagsService>(CoursesTagsService);
   });
 
   it('should be defined', () => {

@@ -62,42 +62,52 @@ model CourseAnnouncements {
 }
 
 model CourseLO {
-  id        String  @id
   course_id Int
+  //this is the serial no of the learning outcomes assocaited with a course
+  serialNo Int
   lo        String
   Courses   Courses @relation(fields: [course_id], references: [course_id])
+
+  @@id([course_id, serialNo])
 }
 
 model CoursePreReq {
-  id        String  @id
   course_id Int
+  serialNo Int
   preReq    String
   Courses   Courses @relation(fields: [course_id], references: [course_id])
+
+  @@id([course_id, serialNo])
 }
 
 model CourseSchedule {
-  id        String   @id
-  course_id Int   @unique
+  course_id Int   
   weekday   weekday
   starttime DateTime
   endtime   DateTime
   Courses   Courses  @relation(fields: [course_id], references: [course_id])
+
+  @@unique([course_id])
 }
 
 model CourseTag {
-  id        String  @id
   course_id Int
+  serialNo Int
   category  String
   Courses   Courses @relation(fields: [course_id], references: [course_id])
+
+  @@id([course_id, serialNo])
 }
 
 model CourseTestimonials {
-  id            String     @id
   course_id     Int
+  serialNo Int
   testimonial   String
   apprentice_id Int
   Apprentice    Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
   Courses       Courses    @relation(fields: [course_id], references: [course_id])
+
+  @@id([course_id, serialNo])
 }
 
 model Courses {
