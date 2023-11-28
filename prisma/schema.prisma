@@ -20,7 +20,7 @@ model Apprentice {
   guardian_cnic      String?              @db.VarChar(13)
   guardian_phone     String?              @db.VarChar(12)
   ApprenticeCert     ApprenticeCert[]
-  ApprenticeCourses  ApprenticeCourses[]
+  ApprenticeStats  ApprenticeStats[]
   CourseTestimonials CourseTestimonials[]
   Enrollments        Enrollments[]
 }
@@ -35,20 +35,16 @@ model ApprenticeCert {
   @@id([course_id, apprentice_id])
 }
 
-model ApprenticeCourses {
-  course_id          Int
+model ApprenticeStats {
   apprentice_id      Int
   completed          Boolean?
   current_chapter_id Int
   current_section_id Int
   current_curr_id    Int
-  startTime          DateTime   @default(now())
-  endTime            DateTime?
   Apprentice         Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
-  Courses            Courses    @relation(fields: [course_id], references: [course_id])
   Lesson             Lesson     @relation(fields: [current_chapter_id, current_curr_id, current_section_id], references: [section_id, curr_id, lesson_id])
 
-  @@id([course_id, apprentice_id])
+  @@id([apprentice_id])
 }
 
 model CourseAnnouncements {
@@ -119,7 +115,6 @@ model Courses {
   rating              Float  
   announcementsNo     Int?               @default(0)
   ApprenticeCert      ApprenticeCert[]
-  ApprenticeCourses   ApprenticeCourses[]
   CourseAnnouncements CourseAnnouncements[]
   CourseLO            CourseLO[]
   CoursePreReq        CoursePreReq[]
@@ -140,6 +135,8 @@ model Curriculum {
 model Enrollments {
   course_id     Int
   apprentice_id Int
+  startTime          DateTime?   @default(now())
+  endTime            DateTime?
   Apprentice    Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
   Courses       Courses    @relation(fields: [course_id], references: [course_id])
 
@@ -153,7 +150,7 @@ model Lesson {
   uri               String
   title             String
   desc              String?
-  ApprenticeCourses ApprenticeCourses[]
+  ApprenticeStats ApprenticeStats[]
   Section           Section             @relation(fields: [section_id, curr_id], references: [section_id, curr_id])
   LessonResources   LessonResources[]
 
