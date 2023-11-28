@@ -11,6 +11,8 @@ import { CoursesAnnouncementsService } from './service/courses-announcements/cou
 import { CoursesTagsService } from './service/courses-tags/courses-tags.service';
 import { CoursesPreReqService } from './service/courses-pre-req/courses-pre-req.service';
 import { CoursesScheduleService } from './service/courses-schedule/courses-schedule.service';
+import { CoursesTestimonialsService } from './service/courses-testimonials/courses-testimonials.service';
+import { CoursesTestimonialsController } from './controller/courses-testimonials/courses-testimonials.controller';
 
 @Module({
   providers: [
@@ -20,6 +22,7 @@ import { CoursesScheduleService } from './service/courses-schedule/courses-sched
     CoursesTagsService,
     CoursesPreReqService,
     CoursesScheduleService,
+    CoursesTestimonialsService,
   ],
   controllers: [
     ControllerController,
@@ -28,6 +31,7 @@ import { CoursesScheduleService } from './service/courses-schedule/courses-sched
     CourseTagsController,
     CoursePreReqController,
     CourseScheduleController,
+    CoursesTestimonialsController,
   ],
 })
 export class CoursesModule {}
