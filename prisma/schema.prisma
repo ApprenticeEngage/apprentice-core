@@ -65,7 +65,7 @@ model CourseLO {
   course_id Int
   //this is the serial no of the learning outcomes assocaited with a course
   serialNo Int
-  lo        String
+  lo        String[]
   Courses   Courses @relation(fields: [course_id], references: [course_id])
 
   @@id([course_id, serialNo])
@@ -202,11 +202,13 @@ model Section {
 }
 
 model SectionLO {
-  id         String  @id
-  lo         String
+  serialNo Int
+  lo         String[]
   section_id Int
   curr_id    Int
   Section    Section @relation(fields: [section_id, curr_id], references: [section_id, curr_id])
+
+  @@id([curr_id,section_id,serialNo])
 }
 
 model Skill {
