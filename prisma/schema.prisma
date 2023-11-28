@@ -116,7 +116,7 @@ model Courses {
   mentor_id           Int?
   curriculum_id       Int?                   @unique
   difficulty_level    Int              
-  rating              Int  
+  rating              Float  
   announcementsNo     Int?               @default(0)
   ApprenticeCert      ApprenticeCert[]
   ApprenticeCourses   ApprenticeCourses[]
