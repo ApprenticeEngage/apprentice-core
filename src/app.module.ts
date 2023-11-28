@@ -17,9 +17,10 @@ import { SectionLoService } from './curriculum/services/section-lo/section-lo.se
 import { TestService } from './curriculum/services/test/test.service';
 import { LessonService } from './curriculum/services/lesson/lesson.service';
 import { LessonResourcesService } from './curriculum/services/lesson-resources/lesson-resources.service';
+import { EnrollmentsModule } from './enrollments/enrollments.module';
 
 @Module({
-  imports: [CoursesModule, ApprenticeModule, MentorModule, DatabaseModule],
+  imports: [CoursesModule, ApprenticeModule, MentorModule, DatabaseModule, EnrollmentsModule],
   controllers: [AppController, CurriculumController, SectionController, SectionLoController, TestController, LessonController, LessonResourcesController],
   providers: [AppService, CurriculumService, SectionService, SectionLoService, TestService, LessonService, LessonResourcesService],
 })
