@@ -223,13 +223,13 @@ model Skill {
 model Test {
   curr_id    Int
   section_id Int
-  lesson_id  Int
+  test_id  Int
   uri        String
   title      String
   desc       String?
   Section    Section @relation(fields: [section_id, curr_id], references: [section_id, curr_id])
 
-  @@id([curr_id, section_id, lesson_id])
+  @@id([curr_id, section_id, test_id])
 }
 
 enum weekday {
