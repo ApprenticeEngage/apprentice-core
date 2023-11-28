@@ -26,13 +26,10 @@ model Apprentice {
 }
 
 model ApprenticeCert {
-  course_id     Int
+  id            Int @id @default(autoincrement())
   apprentice_id Int
   uri           String?
   Apprentice    Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
-  Courses       Courses    @relation(fields: [course_id], references: [course_id])
-
-  @@id([course_id, apprentice_id])
 }
 
 model ApprenticeStats {
@@ -113,7 +110,6 @@ model Courses {
   difficulty_level    Int              
   rating              Float  
   announcementsNo     Int?               @default(0)
-  ApprenticeCert      ApprenticeCert[]
   CourseAnnouncements CourseAnnouncements[]
   CourseLO            CourseLO[]
   CoursePreReq        CoursePreReq[]
