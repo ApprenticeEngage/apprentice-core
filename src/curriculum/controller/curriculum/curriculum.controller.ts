@@ -17,8 +17,8 @@ export class CurriculumController {
 
   //find lo of a curriculum
   @Get('/:currId')
-  async getCourseContent(@Param('currId', ParseIntPipe) courseId: number) {
-    return this.service.findAll(courseId);
+  async getCourseContent(@Param('currId', ParseIntPipe) currId: number) {
+    return this.service.findAll(currId);
   }
 
   //store LO of a curriculum

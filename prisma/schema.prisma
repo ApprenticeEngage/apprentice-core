@@ -146,6 +146,8 @@ model Enrollments {
   @@id([course_id, apprentice_id])
 }
 
+
+
 model Lesson {
   curr_id           Int
   section_id        Int
@@ -200,6 +202,7 @@ model Section {
 
   @@id([curr_id, section_id])
 }
+
 
 model SectionLO {
   serialNo Int
