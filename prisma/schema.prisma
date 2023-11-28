@@ -146,8 +146,6 @@ model Enrollments {
   @@id([course_id, apprentice_id])
 }
 
-
-
 model Lesson {
   curr_id           Int
   section_id        Int
@@ -163,12 +161,14 @@ model Lesson {
 }
 
 model LessonResources {
-  id         String @id
+  serialNo Int
   section_id Int
   curr_id    Int
   lesson_id  Int
   uri        String
   Lesson     Lesson @relation(fields: [section_id, curr_id, lesson_id], references: [section_id, curr_id, lesson_id])
+
+  @@id([curr_id,section_id, lesson_id, serialNo])
 }
 
 model Mentor {
@@ -203,7 +203,7 @@ model Section {
   @@id([curr_id, section_id])
 }
 
-
+// 
 model SectionLO {
   serialNo Int
   lo         String[]
