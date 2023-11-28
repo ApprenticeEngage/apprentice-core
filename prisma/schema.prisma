@@ -130,7 +130,7 @@ model Curriculum {
 model Enrollments {
   course_id     Int
   apprentice_id Int
-  startTime          DateTime?   @default(now())
+  startTime          DateTime   @default(now())
   endTime            DateTime?
   Apprentice    Apprentice @relation(fields: [apprentice_id], references: [apprentice_id])
   Courses       Courses    @relation(fields: [course_id], references: [course_id])
