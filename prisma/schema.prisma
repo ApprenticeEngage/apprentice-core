@@ -37,7 +37,6 @@ model ApprenticeCert {
 
 model ApprenticeStats {
   apprentice_id      Int
-  completed          Boolean?
   current_chapter_id Int
   current_section_id Int
   current_curr_id    Int

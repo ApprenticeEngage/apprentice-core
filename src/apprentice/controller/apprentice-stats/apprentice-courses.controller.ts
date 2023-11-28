@@ -8,15 +8,15 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApprenticeCourses } from '@prisma/client';
-import { ApprenticeCoursesService } from 'src/apprentice/service/apprentice-courses/apprentice-courses.service';
+import { ApprenticeStats } from '@prisma/client';
+import { ApprenticeStatsService } from 'src/apprentice/service/apprentice-stats/apprentice-courses.service';
 
-@Controller('apprentice-courses')
-export class ApprenticeCoursesController {
-  constructor(private readonly service: ApprenticeCoursesService) {}
+@Controller('apprentice/apprentice-stats')
+export class ApprenticeStatsController {
+  constructor(private readonly service: ApprenticeStatsService) {}
 
   @Post('/create')
-  create(@Body() apprenticeCourses: ApprenticeCourses) {
+  create(@Body() apprenticeCourses: ApprenticeStats) {
     return this.service.create(apprenticeCourses);
   }
 
@@ -25,11 +25,10 @@ export class ApprenticeCoursesController {
     return this.service.findOne(id);
   }
 
-  //updating a skill
   @Put('/:id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() apprenticeCourses: ApprenticeCourses,
+    @Body() apprenticeCourses: ApprenticeStats,
   ) {
     return this.service.update(id, apprenticeCourses);
   }
