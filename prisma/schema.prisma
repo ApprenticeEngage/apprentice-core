@@ -178,7 +178,7 @@ model Mentor {
   email        String        @db.VarChar(320)
   phone        String        @db.VarChar(12)
   cnic         String        @db.VarChar(13)
-  rating       Int
+  rating       Float
   Courses      Courses[]
   MentorSkill  MentorSkill[]
 }
